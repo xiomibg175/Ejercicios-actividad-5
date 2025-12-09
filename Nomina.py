@@ -2,9 +2,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import os
 
-# ==========================================================================
-# MODELO (LÓGICA DEL NEGOCIO)
-# ==========================================================================
 
 class Empleado:
     def __init__(self, nombre, apellidos, cargo, genero, salario_dia, 
@@ -19,7 +16,7 @@ class Empleado:
         self.pagos_salud = pagos_salud
         self.aporte_pensiones = aporte_pensiones
 
-    # Métodos Get (Accesores)
+   
     def get_nombre(self): return self.nombre
     def get_apellidos(self): return self.apellidos
     def get_cargo(self): return self.cargo
@@ -31,7 +28,7 @@ class Empleado:
     def get_aporte_pensiones(self): return self.aporte_pensiones
 
     def calcular_nomina(self):
-        """Calcula el salario mensual: (Días * Salario) + Otros - Salud - Pensiones"""
+        
         devengado = (self.salario_dia * self.dias_trabajados) + self.otros_ingresos
         deducciones = self.pagos_salud + self.aporte_pensiones
         return devengado - deducciones
@@ -49,17 +46,17 @@ class ListaEmpleados:
         return self.total_nomina
 
     def obtener_matriz(self):
-        """Retorna los datos formateados para la tabla de la interfaz."""
+        
         datos = []
         for e in self.lista:
             sueldo = e.calcular_nomina()
-            # Formato: Nombre, Apellidos, Sueldo
+           
             datos.append((e.get_nombre(), e.get_apellidos(), f"{sueldo:.1f}"))
         self.calcular_total_nomina()
         return datos
 
     def convertir_texto(self):
-        """Genera el reporte de texto para guardar en archivo."""
+        
         texto = ""
         for e in self.lista:
             texto += f"Nombre = {e.get_nombre()}\n"
@@ -76,9 +73,7 @@ class ListaEmpleados:
         texto += f"Total nómina = ${self.calcular_total_nomina():.2f}"
         return texto
 
-# ==========================================================================
-# UTILIDADES DE INTERFAZ
-# ==========================================================================
+
 
 def centrar_ventana(ventana, ancho, alto):
     pantalla_ancho = ventana.winfo_screenwidth()
@@ -87,9 +82,7 @@ def centrar_ventana(ventana, ancho, alto):
     y = int((pantalla_alto / 2) - (alto / 2))
     ventana.geometry(f'{ancho}x{alto}+{x}+{y}')
 
-# ==========================================================================
-# VISTAS (INTERFAZ GRÁFICA)
-# ==========================================================================
+
 
 class VentanaAgregarEmpleado(tk.Toplevel):
     def __init__(self, padre, lista_empleados):
@@ -104,10 +97,10 @@ class VentanaAgregarEmpleado(tk.Toplevel):
         self.crear_componentes()
 
     def crear_componentes(self):
-        # Variables de control
+       
         self.var_genero = tk.StringVar(value="Masculino")
         
-        # --- Componentes visuales (Posicionamiento absoluto para replicar diseño) ---
+       
         
         tk.Label(self, text="Nombre:").place(x=20, y=20, width=135, height=23)
         self.txt_nombre = tk.Entry(self)
@@ -174,7 +167,7 @@ class VentanaAgregarEmpleado(tk.Toplevel):
                 messagebox.showerror("Error", "Campo nulo o error en formato de numero", parent=self)
                 return
 
-            # Conversión y validación de tipos
+            
             emp = Empleado(
                 nombre,
                 apellidos,
@@ -210,7 +203,7 @@ class VentanaNomina(tk.Toplevel):
     def crear_componentes(self):
         tk.Label(self, text="Lista de empleados:").place(x=20, y=10, width=135, height=23)
 
-        # Configuración de Tabla
+        
         cols = ("NOMBRE", "APELLIDOS", "SUELDO")
         self.tabla = ttk.Treeview(self, columns=cols, show="headings")
         
@@ -222,7 +215,7 @@ class VentanaNomina(tk.Toplevel):
         self.tabla.column("APELLIDOS", width=100)
         self.tabla.column("SUELDO", width=100)
 
-        # Llenar datos
+        
         for d in self.lista.obtener_matriz():
             self.tabla.insert("", tk.END, values=d)
 
@@ -278,9 +271,7 @@ class VentanaPrincipal(tk.Tk):
             except Exception as e:
                 messagebox.showerror("Error", f"Error al guardar: {e}")
 
-# ==========================================================================
-# EJECUCIÓN
-# ==========================================================================
+
 if __name__ == "__main__":
     app = VentanaPrincipal()
     app.mainloop()
